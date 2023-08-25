@@ -54,5 +54,7 @@ class Client():
 	def chat_thread_messages(self,ndc_Id: str,thread_Id: str,size: int = 10):
 	       data = {"ndcId": f"x{ndc_Id}", "threadId": thread_Id, "size": size}
 	       return requests.get(f"{self.api}/chat-thread-messages",params=data,headers=self.headers).json()
+	def get_public_chats(self, ndc_id: int):
+		return convert(requests.get(f"{self.partial}/public-chat-threads/x{ndc_id}",headers=self.headers).text)
 	def my_community(self):
 		return convert(requests.get(f"{self.partial}/global-chat-communities",headers=self.headers).text)
