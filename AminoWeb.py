@@ -1,4 +1,5 @@
-import requests,json,base64
+import requests,json
+from base64 import b64decode
 from functools import reduce
 from html_to_json import convert
 #fuck...web-api amino has very few features
