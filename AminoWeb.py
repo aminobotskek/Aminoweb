@@ -1,4 +1,5 @@
 import requests,json,base64
+from functools import reduce
 from html_to_json import convert
 #fuck...web-api amino has very few features
 class Client():
@@ -24,17 +25,10 @@ class Client():
 	def get_blog_votes(self, ndc_Id: str, blog_Id: str):
 		return requests.get(f"{self.api}/x{ndc_Id}/blog/{blog_Id}/votes",headers=self.headers)
 	def auth_sid(self, sid: str):
-		try:
-			value = str(base64.b64decode(sid.replace("sid=", "")))
-			value_index = value.index("{")
-			value_index_two = value.index("}")
-			value = value[value_index: value_index_two + 1]
-			data = json.loads(value)
-			self.user_Id = data["2"]
-			self.sid=sid
-			self.headers["cookie"] = f"sid={sid}"
-		except BaseException:
-			pass
+		data =json.loads(b64decode(reduce(lambda a, e: a.replace(*e), ("-+", "_/"), sid + "=" * (-len(sid) % 4)).encode())[1:-20].decode())
+		self.sid = sid
+		self.userId = data["2"]
+		self.headers["cookie"] = f"sid={sid}"
 	def search_community(self,page:str,query:str):
 		return convert(requests.get(f"{self.partial}/community/search-suggestion?q={query}&page={page}",headers=self.headers).text)
 	def members_in_thread(self,ndc_Id: str,thread_Id: str,type: str = "default",start: int = 0,size: int = 10):
