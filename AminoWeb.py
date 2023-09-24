@@ -5,7 +5,7 @@ from html_to_json import convert
 #fuck...web-api amino has very few features
 class Client():
 	def __init__(self):
-		self.partial = "https://aminoapps.com/partial"
+		self.partial="https://aminoapps.com/partial"
 		self.api="https://aminoapps.com/api"
 		self.headers={"user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/73.0.3683.86 Chrome/73.0.3683.86 Safari/537.36","x-requested-with": "xmlhttprequest"}
 		self.user_Id=None
@@ -51,5 +51,11 @@ class Client():
 	       return requests.get(f"{self.api}/chat-thread-messages",params=data,headers=self.headers).json()
 	def get_public_chats(self, ndc_id: int):
 		return convert(requests.get(f"{self.partial}/public-chat-threads/x{ndc_id}",headers=self.headers).text)
+	def community_identity(self):
+		return convert(requests.get(f"{self.partial}/global-identity",headers=self.headers).text)
+	def mark_thread_read(self,ndc_id: int,message_id: int,thread_id):
+		return requests.get(f"{self.api}/chat/mark-thread-read?ndcId={ndc_id}&threadId={thread_id}&messageId={message_id}",headers=self.headers).json()
+	def my_chat_threads(self,ndc_id: int,start:int,size:int):
+		return requests.get(f"{self.api}/my-chat-threads?ndcId={ndc_id}&start={start}&size={size}",headers=self.headers).json()
 	def my_community(self):
 		return convert(requests.get(f"{self.partial}/global-chat-communities",headers=self.headers).text)
